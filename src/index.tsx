@@ -4,24 +4,27 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux'
 import store from './redux/store'
-import LoginPage from "./component/loginPage";
-import Navbar from "./component/navbar";
 import {ChakraProvider} from "@chakra-ui/react";
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Navbar from "./component/navbar";
+import Login from "./component/login";
+import Vote from "./component/vote";
+import NotFound from "./component/notFound";
 
 ReactDOM.render(
-    <ChakraProvider>
-        <Provider store={store}>
-            <ChakraProvider>
-                <BrowserRouter>
-                    <Navbar/>
-                    <LoginPage/>
-                </BrowserRouter>
-            </ChakraProvider>
-        </Provider>
-    </ChakraProvider>,
-    document.getElementById('root')
-);
+    <Provider store={store}>
+        <ChakraProvider>
+            <BrowserRouter>
+                <Navbar/>
+                <Routes>
+                    <Route path={"/"} element={<Login/>} />
+                    <Route path={"/vote"} element={ <Vote/> } />
+                    <Route path="*" element={ <NotFound/> } />
+                </Routes>
+            </BrowserRouter>
+        </ChakraProvider>
+    </Provider>,
+document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {v4 as uuidv4} from 'uuid';
 // @ts-ignore
 import {_getUsers} from "../_DATA";
+import User from "../types/User";
 
 export const fetchUserById = createAsyncThunk(
     'users/fetchByIdStatus',
@@ -24,13 +25,16 @@ interface UserType {
 
 interface UserState {
     users: UserType[],
-    getUsers: Object[]
+    getUsers: any[],
+    loggedIn: boolean,
+    loginUser?: User
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
     getUsers: [],
-    users: []
+    users: [],
+    loggedIn: false,
 }
 
 export const userSlice = createSlice({
@@ -55,6 +59,10 @@ export const userSlice = createSlice({
             state.getUsers = newarr as Object[]
             // console.log("NAR", newarr)
             // state.getUsers.push(...newarr as Object[])
+        },
+        loginWithUser: (state, action:PayloadAction<User>) => {
+            state.loggedIn = true;
+            state.loginUser = action.payload
         }
     },
     extraReducers: builder => {
@@ -66,7 +74,7 @@ export const userSlice = createSlice({
 })
 
 // export const {increment, decrement, incrementByAmount} = userSlice.actions
-export const { addUser, loadUsers } = userSlice.actions
+export const { addUser, loadUsers, loginWithUser } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value
