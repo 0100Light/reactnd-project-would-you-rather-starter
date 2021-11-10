@@ -1,10 +1,12 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
 import counterReducer from './counterSlice'
 import userReducer from './userSlice'
+import voteReducer from './voteSlice'
 
 const rootReducer = combineReducers({
     counter: counterReducer,
-    user: userReducer
+    user: userReducer,
+    vote: voteReducer
 })
 
 export const store = configureStore({

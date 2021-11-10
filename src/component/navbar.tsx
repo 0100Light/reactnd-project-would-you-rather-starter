@@ -15,7 +15,7 @@ function Navbar() {
     return <div>
         <Flex p={5}>
             <Heading>Would U Rather</Heading>
-            <Link to={"/"}>[ Home ]</Link>
+            <Link to={"/"}>[ Login ]</Link>
             <Link to={"/vote"}>[ Vote ]</Link>
             <p onClick={() => handleLogoutUser() }>[ Logout ]</p>
         </Flex>
