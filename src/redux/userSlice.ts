@@ -63,7 +63,11 @@ export const userSlice = createSlice({
         loginWithUser: (state, action:PayloadAction<User>) => {
             state.loggedIn = true;
             state.loginUser = action.payload
-        }
+        },
+        logoutUser: (state => {
+            state.loggedIn = false
+            state.loginUser = undefined
+        })
     },
     extraReducers: builder => {
         builder.addCase(fetchUserById.fulfilled, (state, action) => {
@@ -74,7 +78,7 @@ export const userSlice = createSlice({
 })
 
 // export const {increment, decrement, incrementByAmount} = userSlice.actions
-export const { addUser, loadUsers, loginWithUser } = userSlice.actions
+export const { addUser, loadUsers, loginWithUser, logoutUser } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

@@ -1,16 +1,25 @@
 import React from "react";
 import {Flex, Heading} from "@chakra-ui/react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useAppDispatch} from "../redux/hooks";
+import {logoutUser} from "../redux/userSlice";
 
-class Navbar extends React.Component {
-    render() {
-        return <div>
-            <Flex p={5}>
-                <Heading>Would U Rather</Heading>
-                <Link to={"/home"} >Home</Link>
-            </Flex>
-        </div>
+function Navbar() {
+    let dispatch = useAppDispatch()
+    let navigate = useNavigate()
+
+    let handleLogoutUser = () => {
+        dispatch(logoutUser())
+        navigate("/")
     }
+    return <div>
+        <Flex p={5}>
+            <Heading>Would U Rather</Heading>
+            <Link to={"/"}>[ Home ]</Link>
+            <Link to={"/vote"}>[ Vote ]</Link>
+            <p onClick={() => handleLogoutUser() }>[ Logout ]</p>
+        </Flex>
+    </div>
 }
 
 export default Navbar

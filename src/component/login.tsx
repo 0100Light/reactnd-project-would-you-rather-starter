@@ -4,10 +4,12 @@ import {loadUsers, loginWithUser} from "../redux/userSlice";
 import {_getUsers} from "../_DATA";
 import {Container, Heading} from "@chakra-ui/react";
 import User from "../types/User";
+import {Navigate, useNavigate} from "react-router-dom";
 
 function Login() {
     let dispatch = useAppDispatch()
     let loadedUsers = useAppSelector(state => state.user.getUsers)
+    let navigate = useNavigate()
 
 
     // https://medium.com/@timtan93/states-and-componentdidmount-in-functional-components-with-hooks-cac5484d22ad
@@ -22,9 +24,19 @@ function Login() {
     let handleLoginWithUser = (user:User) => {
         console.log("LIW", user.id)
         dispatch(loginWithUser(user))
+        navigate("/vote")
     }
 
+    // let loginRedirect = () => {
+    //     let loggedIn = useAppSelector(state => state.user.loggedIn)
+    //     return loggedIn ? <Redirect path="/vote"/>
+    // }
+
+
+    let loggedIn = useAppSelector(state => state.user.loggedIn)
+
     return (
+        loggedIn ? <Navigate to="/vote" /> :
         <div>
             <Container bg="#eeeeee" minW="70vw" p={5}>
                 <Heading>Login Page</Heading>
