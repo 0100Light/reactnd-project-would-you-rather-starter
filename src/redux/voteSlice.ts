@@ -18,12 +18,26 @@ export const voteSlice = createSlice({
     reducers: {
         fetchQuestions: (state, action: PayloadAction<{[key: string]: Question}>) => {
             state.questions = action.payload
-        }
+        },
+        voteForOption: ((state, action) => {
+            let { option, question, user } = action.payload
+            let oneVotes = state.questions[question.id].optionOne.votes
+            let twoVotes = state.questions[question.id].optionTwo.votes
+            console.log(option, question.id, user.id)
+            if (option === 1){
+                if ( oneVotes.indexOf(user.id) === -1 ) oneVotes.push(user.id)
+                state.questions[question.id].optionTwo.votes = twoVotes.filter(i => i !== user.id) as string[]
+            }
+            if (option === 2){
+                if ( twoVotes.indexOf(user.id) === -1 ) twoVotes.push(user.id)
+                state.questions[question.id].optionOne.votes = oneVotes.filter(i => i !== user.id) as string[]
+            }
+        })
 
     },
 })
 
-export const { fetchQuestions } = voteSlice.actions
+export const { fetchQuestions, voteForOption } = voteSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

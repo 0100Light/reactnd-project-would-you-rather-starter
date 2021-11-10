@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux'
 import store from './redux/store'
@@ -10,6 +9,7 @@ import Navbar from "./component/navbar";
 import Login from "./component/login";
 import Vote from "./component/vote";
 import NotFound from "./component/notFound";
+import VoteDetail from "./component/voteDetail";
 
 ReactDOM.render(
     <Provider store={store}>
@@ -19,6 +19,7 @@ ReactDOM.render(
                 <Routes>
                     <Route path={"/"} element={<Login/>} />
                     <Route path={"/vote"} element={ <Vote/> } />
+                    <Route path={"/voteDetail/:qid"} element={ <VoteDetail/> } />
                     <Route path="*" element={ <NotFound/> } />
                 </Routes>
             </BrowserRouter>
