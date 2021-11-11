@@ -10,6 +10,7 @@ import Login from "./component/login";
 import Vote from "./component/vote";
 import NotFound from "./component/notFound";
 import VoteDetail from "./component/voteDetail";
+import AddQuestion from "./component/addQuestion";
 
 ReactDOM.render(
     <Provider store={store}>
@@ -20,6 +21,7 @@ ReactDOM.render(
                     <Route path={"/"} element={<Login/>} />
                     <Route path={"/vote"} element={ <Vote/> } />
                     <Route path={"/voteDetail/:qid"} element={ <VoteDetail/> } />
+                    <Route path={"/add"} element={ <AddQuestion/> } />
                     <Route path="*" element={ <NotFound/> } />
                 </Routes>
             </BrowserRouter>

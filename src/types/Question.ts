@@ -1,7 +1,7 @@
 interface Question {
     id: string,
     author: string,
-    timestamp: Date,
+    timestamp: number,
     optionOne: {
         votes: string[]
         text: string

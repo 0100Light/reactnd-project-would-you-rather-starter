@@ -1,17 +1,20 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import Question from "../types/Question";
+import {v4 as uuidv4} from 'uuid'
 
 // Define a type for the slice state
 interface VoteState {
     questions: {[key: string]: Question}
     displayedQuestions?: Question[]
     displayOption: string
+    fetchQuestions: boolean
 }
 
 // Define the initial state using that type
 const initialState: VoteState = {
     questions: {},
-    displayOption: "all"
+    displayOption: "all",
+    fetchQuestions: true
 }
 
 export const voteSlice = createSlice({
@@ -20,10 +23,14 @@ export const voteSlice = createSlice({
     initialState,
     reducers: {
         fetchQuestions: (state, action: PayloadAction<{[key: string]: Question}>) => {
-            state.questions = action.payload
-            state.displayedQuestions = Object.values(action.payload)
+            if (state.fetchQuestions) {
+                state.questions = action.payload
+                state.displayedQuestions = Object.values(state.questions)
+                state.fetchQuestions = false
+            }
+            // state.questions = action.payload
         },
-        voteForOption: ((state, action) => {
+        voteForOption: (state, action) => {
             let { option, question, user } = action.payload
             let oneVotes = state.questions[question.id].optionOne.votes
             let twoVotes = state.questions[question.id].optionTwo.votes
@@ -36,16 +43,32 @@ export const voteSlice = createSlice({
                 if ( twoVotes.indexOf(user.id) === -1 ) twoVotes.push(user.id)
                 state.questions[question.id].optionOne.votes = oneVotes.filter(i => i !== user.id) as string[]
             }
-        }),
+
+            state.displayedQuestions = Object.values(state.questions)
+        },
         changeVisibility: ((state, action) => {
             state.displayOption = action.payload.displayOption
             state.displayedQuestions = action.payload.displayedQuestions
-        })
+        }),
+        addQuestion: (state, action) => {
+            let q: Question = {
+                author: action.payload.author.id,
+                id: uuidv4(),
+                optionOne: {text: action.payload.optionA, votes: []},
+                optionTwo: {text: action.payload.optionB, votes: []},
+                timestamp: Date.now()
+            }
+            // if (state.displayedQuestions !== undefined) {
+            //     state.displayedQuestions.push(q)
+            // }
+            state.questions[q.id] = q
+            state.displayedQuestions = Object.values(state.questions)
+        }
 
     },
 })
 
-export const { fetchQuestions, voteForOption, changeVisibility } = voteSlice.actions
+export const { fetchQuestions, voteForOption, changeVisibility, addQuestion } = voteSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

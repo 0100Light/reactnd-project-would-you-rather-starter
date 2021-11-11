@@ -1,5 +1,5 @@
 import {Container, Heading} from "@chakra-ui/react";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {useEffect} from "react";
 import {_getQuestions} from "../_DATA";
@@ -13,12 +13,19 @@ function Vote() {
     let navigate = useNavigate()
     let displayedQuestions = useAppSelector(s => s.vote.displayedQuestions)
     let displayOption = useAppSelector(s => s.vote.displayOption)
+    let shouldFetch = useAppSelector(s => s.vote.fetchQuestions)
 
     useEffect(() => {
-        _getQuestions().then((data) => {
-            dispatch(fetchQuestions(data))
-        })
+        if (shouldFetch){
+            _getQuestions().then((data) => {
+                dispatch(fetchQuestions(data))
+            })
+        }
     }, [])
+
+    // useEffect(()=>{
+    //     console.log("question updated")
+    // }, [questions])
 
 
     let handleQuestionDetailClick = (q:Question) => {
@@ -65,7 +72,9 @@ function Vote() {
                 <button onClick={ () => handleShowAllList() }>[ All ]</button>
                 <button onClick={ () => handleShowAnsweredList() }>[ Ans ]</button>
                 <button onClick={ () => handleShowUnansList() }>[ UnAns ]</button>
-                <p>[ disp: {displayOption} ]</p>
+                <p>[ current: {displayOption} ]</p>
+                <br/>
+                <Link to={"/add"}>[ Add ]</Link>
                 <br/>
 
                 {displayedQuestions ? displayedQuestions.map((q) => {
