@@ -3,7 +3,7 @@ import {Navigate, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {useEffect} from "react";
 import {_getQuestions} from "../_DATA";
-import {fetchQuestions} from "../redux/voteSlice";
+import {changeVisibility, fetchQuestions} from "../redux/voteSlice";
 import Question from "../types/Question";
 
 function Vote() {
@@ -11,6 +11,8 @@ function Vote() {
     let loggedIn = useAppSelector(s => s.user.loggedIn)
     let questions = useAppSelector(s => s.vote.questions)
     let navigate = useNavigate()
+    let displayedQuestions = useAppSelector(s => s.vote.displayedQuestions)
+    let displayOption = useAppSelector(s => s.vote.displayOption)
 
     useEffect(() => {
         _getQuestions().then((data) => {
@@ -18,28 +20,61 @@ function Vote() {
         })
     }, [])
 
-    let qList = Object.entries(questions).map(([, v]) => {
-        return v
-    })
 
     let handleQuestionDetailClick = (q:Question) => {
         navigate("/voteDetail/" + q.id)
+    }
+
+    interface ChangeVisibilityPayload {
+        displayOption: "all" | "ans" | "unans",
+        displayedQuestions: Question[]
+    }
+
+    let handleShowAllList = () => {
+        let pl: ChangeVisibilityPayload = {
+            displayOption: "all",
+            displayedQuestions: Object.values(questions)
+        }
+        dispatch(changeVisibility(pl))
+    }
+    let handleShowAnsweredList = () => {
+        let al = Object.values(questions).filter(q => {
+            return q.optionOne.votes.length + q.optionTwo.votes.length > 0
+        })
+        let pl: ChangeVisibilityPayload = {
+            displayOption: "ans",
+            displayedQuestions: al
+        }
+        dispatch(changeVisibility(pl))
+    }
+    let handleShowUnansList = () => {
+        let ul = Object.values(questions).filter(q => {
+            return q.optionOne.votes.length + q.optionTwo.votes.length === 0
+        })
+        let pl: ChangeVisibilityPayload = {
+            displayOption: "unans",
+            displayedQuestions: ul
+        }
+        dispatch(changeVisibility(pl))
     }
 
     return (
         !loggedIn ? <Navigate to="/"/> : (
             <Container minW="80vw">
                 <Heading>Vote</Heading>
-                <p>(show | hide) unanswered</p>
+                <button onClick={ () => handleShowAllList() }>[ All ]</button>
+                <button onClick={ () => handleShowAnsweredList() }>[ Ans ]</button>
+                <button onClick={ () => handleShowUnansList() }>[ UnAns ]</button>
+                <p>[ disp: {displayOption} ]</p>
                 <br/>
 
-                {qList.map((q) => {
+                {displayedQuestions ? displayedQuestions.map((q) => {
                     return <div key={q.id} onClick={ () => { handleQuestionDetailClick(q) }}>
                         <p>{ q.author }</p>
                         <p>{q.optionOne.text}, {q.optionOne.votes.length}, {q.optionTwo.text}, {q.optionTwo.votes.length}</p>
                         <br/>
                     </div>
-                })}
+                }) : null }
 
             </Container>
         )

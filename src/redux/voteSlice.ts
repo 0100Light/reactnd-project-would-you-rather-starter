@@ -4,11 +4,14 @@ import Question from "../types/Question";
 // Define a type for the slice state
 interface VoteState {
     questions: {[key: string]: Question}
+    displayedQuestions?: Question[]
+    displayOption: string
 }
 
 // Define the initial state using that type
 const initialState: VoteState = {
-    questions: {}
+    questions: {},
+    displayOption: "all"
 }
 
 export const voteSlice = createSlice({
@@ -18,6 +21,7 @@ export const voteSlice = createSlice({
     reducers: {
         fetchQuestions: (state, action: PayloadAction<{[key: string]: Question}>) => {
             state.questions = action.payload
+            state.displayedQuestions = Object.values(action.payload)
         },
         voteForOption: ((state, action) => {
             let { option, question, user } = action.payload
@@ -32,12 +36,16 @@ export const voteSlice = createSlice({
                 if ( twoVotes.indexOf(user.id) === -1 ) twoVotes.push(user.id)
                 state.questions[question.id].optionOne.votes = oneVotes.filter(i => i !== user.id) as string[]
             }
+        }),
+        changeVisibility: ((state, action) => {
+            state.displayOption = action.payload.displayOption
+            state.displayedQuestions = action.payload.displayedQuestions
         })
 
     },
 })
 
-export const { fetchQuestions, voteForOption } = voteSlice.actions
+export const { fetchQuestions, voteForOption, changeVisibility } = voteSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value

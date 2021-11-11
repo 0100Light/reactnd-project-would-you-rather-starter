@@ -11,6 +11,11 @@ function VoteDetail() {
     let navigate = useNavigate()
     let q = questions.filter(q => q.id === qid)[0]
     let dispatch = useAppDispatch()
+    let voted = 0
+
+    if (!isLoggedIn || !loggedInUser) {
+        return <Navigate to={"/"} />
+    }
 
     let handleVoteForOption = (option: number) => {
         if (!loggedInUser) return null
@@ -37,11 +42,11 @@ function VoteDetail() {
             default: return null
         }
 
-        // console.log(nq)
+        voted = option
     }
 
     return (
-        !isLoggedIn ? <Navigate to={"/"}/> : (
+        (!isLoggedIn && loggedInUser) ? <Navigate to={"/"}/> : (
             <div>
                 <Heading>Vote detail: {qid}</Heading>
                 <p>[ { q.author } ] Asked</p>
@@ -49,13 +54,13 @@ function VoteDetail() {
                 <br/>
                 <div id="optionA">
                     <p>[ { q.optionOne.text } ]</p>
-                    <p>[ V ]</p>
+                    { q.optionOne.votes.indexOf(loggedInUser.id) > -1 && <p>[ v ]</p>}
                     <button onClick={ () => handleVoteForOption(1) }>Choose</button>
                 </div>
                 <br/>
                 <div id="optionB">
                     <p>[ { q.optionTwo.text } ]</p>
-                    <p>[ V ]</p>
+                    { q.optionTwo.votes.indexOf(loggedInUser.id) > -1 && <p>[ v ]</p>}
                     <button onClick={ () => handleVoteForOption(2) }>Choose</button>
                 </div>
             </div>
