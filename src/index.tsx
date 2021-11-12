@@ -11,6 +11,7 @@ import Vote from "./component/vote";
 import NotFound from "./component/notFound";
 import VoteDetail from "./component/voteDetail";
 import AddQuestion from "./component/addQuestion";
+import Leaderboard from "./component/leaderboard";
 
 ReactDOM.render(
     <Provider store={store}>
@@ -22,6 +23,7 @@ ReactDOM.render(
                     <Route path={"/vote"} element={ <Vote/> } />
                     <Route path={"/voteDetail/:qid"} element={ <VoteDetail/> } />
                     <Route path={"/add"} element={ <AddQuestion/> } />
+                    <Route path={"/leaderboard"} element={ <Leaderboard/> } />
                     <Route path="*" element={ <NotFound/> } />
                 </Routes>
             </BrowserRouter>

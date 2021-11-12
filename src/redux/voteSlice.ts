@@ -58,9 +58,6 @@ export const voteSlice = createSlice({
                 optionTwo: {text: action.payload.optionB, votes: []},
                 timestamp: Date.now()
             }
-            // if (state.displayedQuestions !== undefined) {
-            //     state.displayedQuestions.push(q)
-            // }
             state.questions[q.id] = q
             state.displayedQuestions = Object.values(state.questions)
         }

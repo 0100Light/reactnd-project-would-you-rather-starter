@@ -1,14 +1,14 @@
 import {Heading} from "@chakra-ui/react";
-import {Navigate, useNavigate, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {voteForOption} from "../redux/voteSlice";
+import {userVoted} from "../redux/userSlice";
 
 function VoteDetail() {
     let isLoggedIn = useAppSelector(s => s.user.loggedIn)
     let loggedInUser = useAppSelector(s => s.user.loginUser)
     let {qid} = useParams()
     let questions = Object.values(useAppSelector(s => s.vote.questions))
-    let navigate = useNavigate()
     let q = questions.filter(q => q.id === qid)[0]
     let dispatch = useAppDispatch()
     let voted = 0
@@ -28,6 +28,7 @@ function VoteDetail() {
                     "user": loggedInUser
                 }
                 dispatch(voteForOption(payload))
+                dispatch(userVoted(payload))
                 break
             }
             case 2: {
@@ -37,6 +38,7 @@ function VoteDetail() {
                     "user": loggedInUser
                 }
                 dispatch(voteForOption(payload))
+                dispatch(userVoted(payload))
                 break
             }
             default: return null

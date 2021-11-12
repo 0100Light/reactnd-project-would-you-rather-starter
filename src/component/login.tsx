@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {loadUsers, loginWithUser} from "../redux/userSlice";
 import {_getUsers} from "../_DATA";
@@ -8,30 +8,21 @@ import {Navigate, useNavigate} from "react-router-dom";
 
 function Login() {
     let dispatch = useAppDispatch()
-    let loadedUsers = useAppSelector(state => state.user.getUsers)
+    let loadedUsers = useAppSelector(state => state.user.users)
     let navigate = useNavigate()
 
 
-    // https://medium.com/@timtan93/states-and-componentdidmount-in-functional-components-with-hooks-cac5484d22ad
-    // empty dependency: same effect as ComponentDidMount
-    // dependency(+): when the value updates, the function will be run again, same effect as ComponentDidUpdate
-    useEffect(()=> {
+    let shouldFetchUsers = useAppSelector(s => s.user.shouldFetchUsers)
+    if (shouldFetchUsers) {
         _getUsers().then(data => {
             dispatch(loadUsers(data))
         })
-    }, [])
+    }
 
     let handleLoginWithUser = (user:User) => {
-        console.log("LIW", user.id)
         dispatch(loginWithUser(user))
         navigate("/vote")
     }
-
-    // let loginRedirect = () => {
-    //     let loggedIn = useAppSelector(state => state.user.loggedIn)
-    //     return loggedIn ? <Redirect path="/vote"/>
-    // }
-
 
     let loggedIn = useAppSelector(state => state.user.loggedIn)
 
@@ -42,7 +33,7 @@ function Login() {
                 <Heading>Login Page</Heading>
                 <p>click to login</p>
                 <br/>
-                { loadedUsers ? loadedUsers.map(u => {
+                { Object.values(loadedUsers) ? Object.values(loadedUsers).map(u => {
                     return <p onClick={ () => handleLoginWithUser(u)} key={u.id}>{u.name}, {u.avatarURL}</p>
                 }) : null }
             </Container>

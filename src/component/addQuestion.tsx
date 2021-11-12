@@ -3,6 +3,7 @@ import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {Navigate, useNavigate} from "react-router-dom";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {addQuestion} from "../redux/voteSlice";
+import {userAddedQuestion} from "../redux/userSlice";
 
 function AddQuestion(){
     let loggedIn = useAppSelector(s => s.user.loggedIn)
@@ -10,6 +11,7 @@ function AddQuestion(){
     let { register, handleSubmit } = useForm<FormData>()
     let dispatch = useAppDispatch()
     let navigate = useNavigate()
+    let questions = useAppSelector(s => s.vote.questions)
 
     interface FormData{
         optionA: string
@@ -19,6 +21,7 @@ function AddQuestion(){
     let onSubmit: SubmitHandler<FormData> = (data) => {
         let payload = Object.assign({}, data, { author: loginUser })
         dispatch(addQuestion(payload))
+        dispatch(userAddedQuestion({loginUser, questions}))
         navigate("/vote")
     }
 

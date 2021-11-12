@@ -13,28 +13,21 @@ export const fetchUserById = createAsyncThunk(
     }
 )
 // Define a type for the slice state
-interface UserType {
-    id: string
-    username: string
-    createdAt: number
-    lastLogin: number
-    asked: number
-    answered: number
-    points: number
-}
-
 interface UserState {
-    users: UserType[],
-    getUsers: any[],
-    loggedIn: boolean,
+    users: {[key: string]: User}
+    getUsers: any[]
+    loggedIn: boolean
     loginUser?: User
+    shouldFetchUsers: boolean
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
+    loginUser: undefined,
+    shouldFetchUsers: true,
     getUsers: [],
-    users: [],
-    loggedIn: false,
+    users: {},
+    loggedIn: false
 }
 
 export const userSlice = createSlice({
@@ -44,21 +37,15 @@ export const userSlice = createSlice({
     reducers: {
         addUser: (state, action: PayloadAction<string>) => {
             let username = action.payload
-            let user: UserType = {
-                answered: 0, asked: 0,
-                createdAt: Date.now().valueOf(),
-                id: uuidv4(),
-                lastLogin: Date.now().valueOf(),
-                points: 0,
-                username: username
+            let user: User = {
+                answers: {}, avatarURL: "", id: uuidv4(), name: username, questions: []
+                // TODO: add user function
             }
-            state.users.push(user)
+            state.users[user.id] = user
         },
         loadUsers: (state, action) => {
-            let newarr = Object.entries(action.payload).map(([_, v]) => v)
-            state.getUsers = newarr as Object[]
-            // console.log("NAR", newarr)
-            // state.getUsers.push(...newarr as Object[])
+            state.users = action.payload
+            state.shouldFetchUsers = false
         },
         loginWithUser: (state, action:PayloadAction<User>) => {
             state.loggedIn = true;
@@ -67,6 +54,22 @@ export const userSlice = createSlice({
         logoutUser: (state => {
             state.loggedIn = false
             state.loginUser = undefined
+        }),
+        userVoted: (state, action) => {
+            let { option, question, user } = action.payload
+            let optionText = ""
+            if (option === 1) optionText = "optionOne"
+            if (option === 2) optionText = "optionTwo"
+            state.users[user.id].answers[question.id] = optionText
+        },
+        userAddedQuestion: ((state, action) => {
+            let { loginUser, questions } = action.payload
+            // get qid's
+            for (let key in questions){
+                if (questions[key].author === loginUser.id){
+                    state.users[loginUser.id].questions.push(key)
+                }
+            }
         })
     },
     extraReducers: builder => {
@@ -78,7 +81,8 @@ export const userSlice = createSlice({
 })
 
 // export const {increment, decrement, incrementByAmount} = userSlice.actions
-export const { addUser, loadUsers, loginWithUser, logoutUser } = userSlice.actions
+export const { addUser, loadUsers, loginWithUser, logoutUser,
+    userVoted, userAddedQuestion } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value
