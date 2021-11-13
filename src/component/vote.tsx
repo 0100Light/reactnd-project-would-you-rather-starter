@@ -1,7 +1,6 @@
 import {Container, Heading} from "@chakra-ui/react";
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
-import {useEffect} from "react";
 import {_getQuestions} from "../_DATA";
 import {changeVisibility, fetchQuestions} from "../redux/voteSlice";
 import Question from "../types/Question";
@@ -15,18 +14,11 @@ function Vote() {
     let displayOption = useAppSelector(s => s.vote.displayOption)
     let shouldFetch = useAppSelector(s => s.vote.fetchQuestions)
 
-    useEffect(() => {
-        if (shouldFetch){
-            _getQuestions().then((data) => {
-                dispatch(fetchQuestions(data))
-            })
-        }
-    }, [])
-
-    // useEffect(()=>{
-    //     console.log("question updated")
-    // }, [questions])
-
+    if (shouldFetch){
+        _getQuestions().then((data) => {
+            dispatch(fetchQuestions(data))
+        })
+    }
 
     let handleQuestionDetailClick = (q:Question) => {
         navigate("/voteDetail/" + q.id)

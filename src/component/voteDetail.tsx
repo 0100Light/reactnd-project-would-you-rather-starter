@@ -11,7 +11,6 @@ function VoteDetail() {
     let questions = Object.values(useAppSelector(s => s.vote.questions))
     let q = questions.filter(q => q.id === qid)[0]
     let dispatch = useAppDispatch()
-    let voted = 0
 
     if (!isLoggedIn || !loggedInUser) {
         return <Navigate to={"/"} />
@@ -43,8 +42,6 @@ function VoteDetail() {
             }
             default: return null
         }
-
-        voted = option
     }
 
     return (
