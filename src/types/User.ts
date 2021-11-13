@@ -5,7 +5,6 @@ interface User {
     answers: { [key: string]: string },
     questions: string[]
 
-
     // sarahedo: {
     //     id: 'sarahedo',
     //     name: 'Sarah Edo',
