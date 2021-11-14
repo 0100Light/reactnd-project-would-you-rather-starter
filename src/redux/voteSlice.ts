@@ -26,9 +26,9 @@ export const voteSlice = createSlice({
             if (state.fetchQuestions) {
                 state.questions = action.payload
                 state.displayedQuestions = Object.values(state.questions)
+                    .sort(i => i.timestamp).reverse()
                 state.fetchQuestions = false
             }
-            // state.questions = action.payload
         },
         voteForOption: (state, action) => {
             let { option, question, user } = action.payload
@@ -60,6 +60,7 @@ export const voteSlice = createSlice({
             }
             state.questions[q.id] = q
             state.displayedQuestions = Object.values(state.questions)
+                .sort(i => i.timestamp).reverse()
         }
 
     },

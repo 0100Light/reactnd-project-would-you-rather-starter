@@ -5,6 +5,7 @@ import {_getUsers} from "../_DATA";
 import {Container, Heading} from "@chakra-ui/react";
 import User from "../types/User";
 import {Navigate, useNavigate} from "react-router-dom";
+import LoginUserBox from "./loginUserBox";
 
 function Login() {
     let dispatch = useAppDispatch()
@@ -29,12 +30,14 @@ function Login() {
     return (
         loggedIn ? <Navigate to="/vote" /> :
         <div>
-            <Container bg="#eeeeee" minW="70vw" p={5}>
-                <Heading>Login Page</Heading>
-                <p>click to login</p>
+            <Container minW="70vw" p={5}>
+                <Heading>Login</Heading>
+                <p>click on one of the users to login</p>
                 <br/>
                 { Object.values(loadedUsers) ? Object.values(loadedUsers).map(u => {
-                    return <p onClick={ () => handleLoginWithUser(u)} key={u.id}>{u.name}, {u.avatarURL}</p>
+                    return <div key={u.id} onClick={ () => handleLoginWithUser(u) }>
+                        <LoginUserBox loginUser={u}/>
+                    </div>
                 }) : null }
             </Container>
         </div>

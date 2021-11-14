@@ -1,9 +1,10 @@
-import {Container, Heading} from "@chakra-ui/react";
+import {Button, Container, Heading, HStack, Text} from "@chakra-ui/react";
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {_getQuestions} from "../_DATA";
 import {changeVisibility, fetchQuestions} from "../redux/voteSlice";
 import Question from "../types/Question";
+import moment from "moment";
 
 function Vote() {
     let dispatch = useAppDispatch()
@@ -33,13 +34,15 @@ function Vote() {
         let pl: ChangeVisibilityPayload = {
             displayOption: "all",
             displayedQuestions: Object.values(questions)
+                .sort(i => i.timestamp).reverse()
         }
         dispatch(changeVisibility(pl))
     }
     let handleShowAnsweredList = () => {
         let al = Object.values(questions).filter(q => {
             return q.optionOne.votes.length + q.optionTwo.votes.length > 0
-        })
+        }).sort(i => i.timestamp).reverse()
+
         let pl: ChangeVisibilityPayload = {
             displayOption: "ans",
             displayedQuestions: al
@@ -49,7 +52,7 @@ function Vote() {
     let handleShowUnansList = () => {
         let ul = Object.values(questions).filter(q => {
             return q.optionOne.votes.length + q.optionTwo.votes.length === 0
-        })
+        }).sort(i => i.timestamp).reverse()
         let pl: ChangeVisibilityPayload = {
             displayOption: "unans",
             displayedQuestions: ul
@@ -60,19 +63,31 @@ function Vote() {
     return (
         !loggedIn ? <Navigate to="/"/> : (
             <Container minW="80vw">
-                <Heading>Vote</Heading>
-                <button onClick={ () => handleShowAllList() }>[ All ]</button>
-                <button onClick={ () => handleShowAnsweredList() }>[ Ans ]</button>
-                <button onClick={ () => handleShowUnansList() }>[ UnAns ]</button>
-                <p>[ current: {displayOption} ]</p>
+                <Heading my={3}>Vote</Heading>
+
+                <Text color={"gray.500"}>
+                    Click on one of the questions to vote,
+                        or click the button to add a question yourself :)
+                </Text>
                 <br/>
-                <Link to={"/add"}>[ Add ]</Link>
+
+                <HStack style={{ textDecoration: "underline" }}>
+                    <button onClick={ () => handleShowAllList() }>Show All |</button>
+                    <button onClick={ () => handleShowAnsweredList() }>Show Answered |</button>
+                    <button onClick={ () => handleShowUnansList() }>Show Unaswered |</button>
+                </HStack>
+                <p>(currently showing: {displayOption})</p>
+                <Button my={5} bg={"yellow.300"}>
+                    <Link to={"/add"}> Add Question </Link>
+                </Button>
                 <br/>
 
                 {displayedQuestions ? displayedQuestions.map((q) => {
                     return <div key={q.id} onClick={ () => { handleQuestionDetailClick(q) }}>
-                        <p>{ q.author }</p>
-                        <p>{q.optionOne.text}, {q.optionOne.votes.length}, {q.optionTwo.text}, {q.optionTwo.votes.length}</p>
+                        <p><strong>{ q.author.toUpperCase() }</strong> asked at {moment(q.timestamp).format("YYYY-MM-DD HH:mm")}:
+                        Would you rather <strong>{q.optionOne.text} ({q.optionOne.votes.length}) </strong>
+                            or <strong>{q.optionTwo.text} ({q.optionTwo.votes.length})</strong></p>
+                        {/*<p>{q.optionOne.text}, {q.optionOne.votes.length}, {q.optionTwo.text}, {q.optionTwo.votes.length}</p>*/}
                         <br/>
                     </div>
                 }) : null }
