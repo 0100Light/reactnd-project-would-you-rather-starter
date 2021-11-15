@@ -1,4 +1,4 @@
-import {Button, Container, Heading, HStack, Text} from "@chakra-ui/react";
+import {Button, Container, Heading, HStack, LinkBox, Text} from "@chakra-ui/react";
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {_getQuestions} from "../_DATA";
@@ -83,13 +83,13 @@ function Vote() {
                 <br/>
 
                 {displayedQuestions ? displayedQuestions.map((q) => {
-                    return <div key={q.id} onClick={ () => { handleQuestionDetailClick(q) }}>
-                        <p><strong>{ q.author.toUpperCase() }</strong> asked at {moment(q.timestamp).format("YYYY-MM-DD HH:mm")}:
+                    return <LinkBox my={5} px={5} py={3} boxShadow={"base"}
+                                    key={q.id} onClick={ () => { handleQuestionDetailClick(q) }}>
+                        <p><strong>{ q.author.toUpperCase() }</strong> asked at {moment(q.timestamp).format("YYYY-MM-DD HH:mm")}:</p>
+                        <p>
                         Would you rather <strong>{q.optionOne.text} ({q.optionOne.votes.length}) </strong>
                             or <strong>{q.optionTwo.text} ({q.optionTwo.votes.length})</strong></p>
-                        {/*<p>{q.optionOne.text}, {q.optionOne.votes.length}, {q.optionTwo.text}, {q.optionTwo.votes.length}</p>*/}
-                        <br/>
-                    </div>
+                    </LinkBox>
                 }) : null }
 
             </Container>

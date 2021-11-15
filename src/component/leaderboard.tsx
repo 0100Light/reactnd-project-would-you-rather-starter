@@ -1,6 +1,7 @@
 import {useAppSelector} from "../redux/hooks";
 import {Navigate} from "react-router-dom";
 import {Container, Heading} from "@chakra-ui/react";
+import LeaderboardBox from "./leaderboardBox";
 
 function Leaderboard() {
     let loggedIn = useAppSelector(s => s.user.loggedIn)
@@ -12,9 +13,7 @@ function Leaderboard() {
                 <Heading>Leaderboard</Heading>
                 {
                     Object.values(users).sort((a => Object.keys(a.answers).length + a.questions.length)).map(u => {
-                        let ansCount = Object.keys(u.answers).length
-                        return <p key={u.id}>{u.name}, {u.avatarURL}, ANS: { ansCount }, ASK: {u.questions.length},
-                            POINTS: { ansCount + u.questions.length}</p>
+                        return <LeaderboardBox key={u.id} userData={u}/>
                     })
                 }
             </Container>

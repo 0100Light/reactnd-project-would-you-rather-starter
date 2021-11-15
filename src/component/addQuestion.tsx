@@ -1,4 +1,4 @@
-import {Heading} from "@chakra-ui/react";
+import {Container, Heading, Input, Text} from "@chakra-ui/react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {Navigate, useNavigate} from "react-router-dom";
 import {SubmitHandler, useForm} from "react-hook-form";
@@ -25,22 +25,26 @@ function AddQuestion(){
         navigate("/vote")
     }
 
+    let inputPlaceholder = "Please enter question text"
+
     return (
         loggedIn ?
-        <div id="add-question">
+        <Container minW={"80vw"} id="add-question">
             <Heading>Add Question</Heading>
 
             <form onSubmit={handleSubmit(onSubmit)} >
-                <p>option A</p>
-                <input type="text" {...register("optionA", {required: "required", maxLength: 50})} />
+                <Text fontSize={"2xl"} mt={5}>Option A</Text>
+                <Input size={"lg"} placeholder={inputPlaceholder}
+                       type="text" {...register("optionA", {required: "required", maxLength: 50})} />
 
-                <p>option B</p>
-                <input type="text" {...register("optionB", {required: "required", maxLength: 50 })} />
+                <Text fontSize={"2xl"} mt={5}>Option B</Text>
+                <Input size={"lg"} placeholder={inputPlaceholder}
+                       type="text" {...register("optionB", {required: "required", maxLength: 50})} />
 
-                <input type="submit" value={"submit"}/>
+                <Input bg={"yellow.300"} mt={5} variant={"filled"} type="submit" value={"SUBMIT"}/>
             </form>
 
-        </div> : <Navigate to={"/"}/>
+        </Container> : <Navigate to={"/"}/>
     )
 }
 

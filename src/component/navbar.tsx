@@ -19,6 +19,7 @@ function Navbar() {
             <Heading m={3}>Would You Rather</Heading>
             { !loggedIn ? <Link to={"/"}>[ Login ] &nbsp;</Link> : null }
             <Link to={"/vote"}>[ Vote ] &nbsp;</Link>
+            <Link to={"/add"}>[ Create ] &nbsp;</Link>
             <Link to={"/leaderboard"}>[ Leaderboard ]</Link>
 
             <Spacer/>
